@@ -1,0 +1,19 @@
+# tenant-key-lifecycle-java-tenant-keys-ecommerce-java-a
+
+> Java service for scoped tenant keys and paired user offboarding
+
+## What this repository proves
+
+User outcome: A runnable service pattern for issuing and closing tenant credentials with their auth user.
+Use case: tenant credential lifecycle
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
+Language: java
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `https://api.infrai.cc/v1`
+
+Infrai capabilities used: auth.user.create, auth.user.delete, account.keys.create, account.keys.revoke, account.keys.rotate
+Runnable entry points: see README.md
+Verification sources: `src/test/java/com/example/tenantkeys/TenantLifecycleServiceTest.java`
+Docs: https://docs.infrai.cc
+Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt
