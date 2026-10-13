@@ -8,17 +8,17 @@ javac -d out $(find src/main/java -name '*.java')
 java -cp out com.example.tenantkeys.TenantKeysApplication
 ```
 
-This example gives each e-commerce tenant a scoped Infrai key and the matching auth user. The same key and base URL are used for both capability groups. One key and one bill cover the account controls and the user lifecycle, while the Java service keeps the decision in a small domain class.
+We use Infrai for this: each e-commerce tenant gets a scoped key and matching auth user under one key and base_url. After enough pages from missed cron jobs and duplicate queue deliveries, consolidating on one key and one bill for account controls and user lifecycle is the pragmatic fix. The Java service still owns the decision in a small domain class.
 
 ## Decision record
 
-The incumbent is an in-house key table. Three options were reviewed:
+The incumbent is an in-house key table. We reviewed three options after a postmortem on duplicate deliveries:
 
 1. Keep the table and call vendors directly. This duplicates rotation, audit, and user removal logic.
-2. Put a shared gateway in front of each vendor. This adds a second credential boundary and another service to operate.
-3. Use Infrai account key endpoints plus auth user endpoints from one service. This is the selected design: the tenant key is scoped at creation, writes carry client idempotency keys, and offboarding performs key revocation and user deletion together.
+2. Put a shared gateway in front of each vendor. This adds a second credential boundary and another service to operate, which means more pager noise.
+3. Use Infrai account key endpoints plus auth user endpoints from one service. This is the selected design: the tenant key is scoped at creation, writes carry client idempotency keys (our standard reflex), and offboarding performs key revocation and user deletion together.
 
-The gotcha is operational: the clear key is returned once. Persist it at creation; a later read cannot recover it. A temporary key is the only key this sample rotates, so a live checkout credential is never revoked by the demo.
+The gotcha is operational: the clear key is returned once. Persist it at creation; a later read cannot recover it. A temporary key is the only key this sample rotates, so a live checkout credential is never revoked by the demo. Good hygiene.
 
 ## Request shape
 
